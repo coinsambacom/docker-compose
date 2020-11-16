@@ -1,0 +1,41 @@
+version: "3"
+services:
+  redis:
+    container_name: redis
+    hostname: redis
+    image: bitnami/redis:5.0.6
+    environment:
+    - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+    - 6379:6379
+    volumes:
+    - redis_data:/bitnami
+    command:
+      ./run.sh --notify-keyspace-events KA
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - 8081:8081
+
+  mysql:
+    image: mysql:5.7
+    hostname: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./db:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    hostname: phpmyadmin
+    links:
+      - np-mysql:mysql
+    ports:
+      - 8181:80
+    environment:
+      MYSQL_ROOT_PASSWORD: root
