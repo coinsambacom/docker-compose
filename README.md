@@ -1,4 +1,4 @@
-# docker-compose
+# 🐳 Docker Compose
 
 Coinsamba docker compose
 
