@@ -23,13 +23,16 @@ services:
 
   mongo:
     image: mongo
+    image: bitnami/mongodb:4.0
     container_name: mongo
     restart: always
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=password
+      - MONGODB_DATABASE=exchange
     volumes:
       - mongo_data:/mongo
 
