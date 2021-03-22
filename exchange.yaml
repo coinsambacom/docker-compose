@@ -21,31 +21,59 @@ services:
     ports:
       - 8081:8081
 
-  mongo:
-    image: mongo
-    image: bitnami/mongodb:4.0
-    container_name: mongo
-    restart: always
+  ## https://github.com/bitnami/bitnami-docker-mongodb/blob/master/docker-compose-replicaset.yml
+
+  mongo1:
+    image: "docker.io/bitnami/mongodb:4.4-debian-10"
     ports:
       - 27017:27017
     environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongo1
+      - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_REPLICA_SET_KEY=replicaSet0
       - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=password
       - MONGODB_DATABASE=exchange
     volumes:
-      - mongo_data:/mongo
+      - "mongo_data:/bitnami/mongodb"
 
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express
-    restart: always
+  mongo2:
+    image: "docker.io/bitnami/mongodb:4.4-debian-10"
     ports:
-      - 8082:8081
+      - 27018:27017
+    depends_on:
+      - mongo1
     environment:
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      - MONGODB_ADVERTISED_HOSTNAME=mongo2
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongo1
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=root
+      - MONGODB_REPLICA_SET_KEY=replicaSet0
+
+  mongo3:
+    image: "docker.io/bitnami/mongodb:4.4-debian-10"
+    ports:
+      - 27019:27017
+    depends_on:
+      - mongo1
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongo3
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongo1
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=root
+      - MONGODB_REPLICA_SET_KEY=replicaSet0
+
+  # mongo-express:
+  #   image: mongo-express
+  #   container_name: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8082:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_PORT: 27017
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: root
 
   rabbitmq:
     image: "rabbitmq:3-management"
