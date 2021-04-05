@@ -1,0 +1,68 @@
+captainVersion: 4
+services:
+  $$cap_appname-mongo1:
+    image: docker.io/bitnami/mongodb:4.4-debian-10
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo1
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_ROOT_PASSWORD: root
+      MONGODB_REPLICA_SET_KEY: replicaSet0
+      MONGODB_USERNAME: $$cap_mongo_username
+      MONGODB_PASSWORD: $$cap_mongo_password
+      MONGODB_DATABASE: $$cap_mongo_database
+    volumes:
+      - $$cap_appname-mongo-data:/var/lib/bitnami/mongodb
+    caproverExtra:
+      notExposeAsWebApp: "true"
+
+  $$cap_appname-mongo2:
+    image: docker.io/bitnami/mongodb:4.4-debian-10
+    ports:
+      - 27018:27017
+    depends_on:
+      - $$cap_appname-mongo1
+    restart: always
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo2
+      MONGODB_REPLICA_SET_MODE: secondary
+      MONGODB_INITIAL_PRIMARY_HOST: srv-captain--$$cap_appname-mongo1
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: root
+      MONGODB_REPLICA_SET_KEY: replicaSet0
+    caproverExtra:
+      notExposeAsWebApp: "true"
+
+  $$cap_appname-mongo3:
+    image: docker.io/bitnami/mongodb:4.4-debian-10
+    ports:
+      - 27019:27017
+    depends_on:
+      - $$cap_appname-mongo1
+    restart: always
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo3
+      MONGODB_REPLICA_SET_MODE: arbiter
+      MONGODB_INITIAL_PRIMARY_HOST: srv-captain--$$cap_appname-mongo1
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: root
+      MONGODB_REPLICA_SET_KEY: replicaSet0
+    caproverExtra:
+      notExposeAsWebApp: "true"
+
+caproverOneClickApp:
+  variables:
+    - id: $$cap_mongo_username
+      label: Name of mongo database
+    - id: $$cap_mongo_password
+      label: Mongo database Password
+    - id: $$cap_mongo_database
+      label: Mongo default database
+  instructions:
+    start: MongoDB is a general purpose, document-based, distributed database built for modern application developers and for the cloud era.
+    end: >-
+      This definition uses binami's mongodb image, to a full list of supported features go to https://github.com/bitnami/bitnami-docker-mongodb
+  displayName: MongoDB Replicaset
+  isOfficial: false
+  description: MongoDB is a general purpose, document-based, distributed database built for modern application developers and for the cloud era.
+  documentation: "Read more at: https://docs.mongodb.com/"
