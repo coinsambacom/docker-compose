@@ -1,6 +1,7 @@
 captainVersion: 4
 services:
   $$cap_appname-mongo1:
+    documentation: Taken from https://github.com/bitnami/bitnami-docker-mongodb
     image: bitnami/mongodb:4.4.1-debian-10-r8
     ports:
       - "27017:27017"
@@ -19,6 +20,7 @@ services:
       notExposeAsWebApp: "true"
 
   $$cap_appname-mongo2:
+    documentation: Taken from https://github.com/bitnami/bitnami-docker-mongodb
     image: bitnami/mongodb:4.4.1-debian-10-r8
     ports:
       - "27018:27017"
@@ -35,6 +37,7 @@ services:
       notExposeAsWebApp: "true"
 
   $$cap_appname-mongo3:
+    documentation: Taken from https://github.com/bitnami/bitnami-docker-mongodb
     image: bitnami/mongodb:4.4.1-debian-10-r8
     ports:
       - "27019:27017"
