@@ -3,8 +3,6 @@ services:
   $$cap_appname-mongo1:
     documentation: Taken from https://github.com/bitnami/bitnami-docker-mongodb
     image: docker.io/bitnami/mongodb:4.4-debian-10
-    ports:
-      - "27017:27017"
     restart: unless-stopped
     environment:
       MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo1
@@ -22,8 +20,6 @@ services:
   $$cap_appname-mongo2:
     documentation: Taken from https://github.com/bitnami/bitnami-docker-mongodb
     image: docker.io/bitnami/mongodb:4.4-debian-10
-    ports:
-      - "27018:27017"
     depends_on:
       - $$cap_appname-mongo1
     restart: unless-stopped
@@ -39,8 +35,6 @@ services:
   $$cap_appname-mongo3:
     documentation: Taken from https://github.com/bitnami/bitnami-docker-mongodb
     image: docker.io/bitnami/mongodb:4.4-debian-10
-    ports:
-      - "27019:27017"
     depends_on:
       - $$cap_appname-mongo1
     restart: unless-stopped
@@ -55,6 +49,11 @@ services:
 
 caproverOneClickApp:
   variables:
+    - id: $$cap_root_password
+      label: Mongo root password
+      defaultValue: root
+      description: ""
+      validRegex: /^[a-z]{1,}$/
     - id: $$cap_mongo_username
       label: Mongo database user
       defaultValue: mongo
