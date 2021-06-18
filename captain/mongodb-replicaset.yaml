@@ -9,7 +9,7 @@ services:
     environment:
       MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo1
       MONGODB_REPLICA_SET_MODE: primary
-      MONGODB_ROOT_PASSWORD: root
+      MONGODB_ROOT_PASSWORD: $$cap_root_password
       MONGODB_REPLICA_SET_KEY: replicaSet0
       MONGODB_USERNAME: $$cap_mongo_username
       MONGODB_PASSWORD: $$cap_mongo_password
@@ -31,7 +31,7 @@ services:
       MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo2
       MONGODB_REPLICA_SET_MODE: secondary
       MONGODB_INITIAL_PRIMARY_HOST: srv-captain--$$cap_appname-mongo1
-      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: root
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: $$cap_root_password
       MONGODB_REPLICA_SET_KEY: replicaSet0
     caproverExtra:
       notExposeAsWebApp: "true"
@@ -48,7 +48,7 @@ services:
       MONGODB_ADVERTISED_HOSTNAME: srv-captain--$$cap_appname-mongo3
       MONGODB_REPLICA_SET_MODE: arbiter
       MONGODB_INITIAL_PRIMARY_HOST: srv-captain--$$cap_appname-mongo1
-      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: root
+      MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD: $$cap_root_password
       MONGODB_REPLICA_SET_KEY: replicaSet0
     caproverExtra:
       notExposeAsWebApp: "true"
