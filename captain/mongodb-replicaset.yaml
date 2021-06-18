@@ -53,7 +53,7 @@ caproverOneClickApp:
       label: Mongo root password
       defaultValue: root
       description: ""
-      validRegex: /^[a-z]{1,}$/
+      validRegex: /.{1,}/
     - id: $$cap_mongo_username
       label: Mongo database user
       defaultValue: mongo
@@ -63,7 +63,7 @@ caproverOneClickApp:
       label: Mongo database Password
       defaultValue: mongo
       description: ""
-      validRegex: /^[a-z]{1,}$/
+      validRegex: /.{1,}/
     - id: $$cap_mongo_database
       label: Mongo default database
       defaultValue: mongo
