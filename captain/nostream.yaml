@@ -26,6 +26,8 @@ services:
       notExposeAsWebApp: true
 
   $$cap_appname:
+    volumes:
+      - $$cap_appname-data:/.nostr
     depends_on:
       - $$cap_appname-postgres
     restart: always
@@ -38,17 +40,15 @@ services:
       REDIS_HOST: srv-captain--$$cap_appname-redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: $$cap_redis_password
-      NOSTR_CONFIG_DIR: $$cap_appname:/data/.nostr/
+      NOSTR_CONFIG_DIR: /.nostr/
     caproverExtra:
       containerHttpPort: "8008"
       dockerfileLines:
-        - FROM node:18-alpine3.16 as build
+        - FROM node:18 AS build
         - WORKDIR /build
-        - RUN git clone git://github.com/Cameri/nostream.git /build
-        - RUN cd /build && git checkout v$$cap_nostream_version && rm -rf .git
-        - COPY ["package.json", "package-lock.json","knexfile.js","./"]
-        - ADD migrations /build/migrations
-        - RUN npm install -g knex@2.3.0 && npm install --quiet
+        - RUN git clone -b v$$cap_nostream_version --single-branch https://github.com/Cameri/nostream.git /build
+        - RUN rm -rf .git
+        - RUN npm install
         - RUN npm run db:migrate
         - COPY . .
         - RUN npm run build
@@ -57,7 +57,7 @@ services:
         - COPY --from=build /build/dist .
         - RUN npm install --omit=dev --quiet
         - USER 1000:1000
-        - RUN mkdir -p $$cap_appname:/data/.nostr/
+        - RUN mkdir -p /.nostr
         - CMD ["node", "src/index.js"]
       notExposeAsWebApp: false
 
