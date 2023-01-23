@@ -6,10 +6,10 @@ services:
       - $$cap_appname-postgres-data:/var/lib/postgresql/data
     restart: always
     environment:
-    POSTGRES_DB: nostr_ts_relay
-    POSTGRES_USER: $$cap_pg_user
-    POSTGRES_PASSWORD: $$cap_pg_password
-    POSTGRES_INITDB_ARGS: $$cap_pg_initdb_args
+      POSTGRES_DB: nostr_ts_relay
+      POSTGRES_USER: $$cap_pg_user
+      POSTGRES_PASSWORD: $$cap_pg_password
+      POSTGRES_INITDB_ARGS: $$cap_pg_initdb_args
     caproverExtra:
       notExposeAsWebApp: true
 
@@ -49,14 +49,13 @@ services:
         - RUN git clone -b v$$cap_nostream_version --single-branch https://github.com/Cameri/nostream.git /build
         - RUN rm -rf .git
         - RUN npm install
-        - RUN npm run db:migrate
+        - CMD ["npm", "run", "db:migrate"]
         - COPY . .
         - RUN npm run build
         - FROM node:18-alpine3.16
         - WORKDIR /app
         - COPY --from=build /build/dist .
         - RUN npm install --omit=dev --quiet
-        - USER 1000:1000
         - RUN mkdir -p /.nostr
         - CMD ["node", "src/index.js"]
       notExposeAsWebApp: false
@@ -79,7 +78,7 @@ caproverOneClickApp:
     end: |-
       Nostream has been successfully deployed!
       --------------------------------------------
-      Before you proceed, please enable Websocket Support
+      Before you proceed, please enable Websocket Support and force HTTPS
       https://$$cap_root_domain/#/apps/details/$$cap_appname
       --------------------------------------------
       App is available as http://$$cap_appname.$$cap_root_domain
